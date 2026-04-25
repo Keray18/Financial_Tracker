@@ -1,4 +1,5 @@
 import { Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const inputSx = {
   bgcolor: 'rgba(14, 27, 58, 0.96)',
@@ -20,6 +21,14 @@ const inputSx = {
 }
 
 const Login = ({ onCreateAccount }) => {
+
+  const Navigate = useNavigate()
+
+  const loginHandler = () => {
+    console.log('loginHandler')
+    Navigate('/dashboard')
+  }
+
   return (
     <Paper
       elevation={0}
@@ -67,6 +76,7 @@ const Login = ({ onCreateAccount }) => {
       </Typography>
 
       <Button
+        onClick={loginHandler}
         fullWidth
         variant='contained'
         sx={{

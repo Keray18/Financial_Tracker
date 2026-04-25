@@ -9,8 +9,6 @@ import {
   Typography,
 } from '@mui/material'
 
-const menuItems = ['Dashboard', 'Accounts', 'Transactions', 'Analytics', 'Budgets', 'Settings']
-
 const statCards = [
   {
     title: 'Total Balance',
@@ -77,86 +75,16 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        height: '100dvh',
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr', md: '260px 1fr' },
-        background:
-          'radial-gradient(circle at 85% 82%, rgba(55, 72, 122, 0.4) 0%, rgba(6, 14, 34, 0.95) 34%, #030816 100%)',
+        height: '100%',
+        width: '100%',
         overflow: 'hidden',
       }}
     >
       <Box
         sx={{
-          borderRight: '1px solid rgba(58, 86, 138, 0.4)',
-          px: 2,
-          py: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'linear-gradient(180deg, rgba(10,24,52,0.92), rgba(8,19,43,0.94))',
-          overflow: 'hidden',
-        }}
-      >
-        <Stack direction='row' spacing={1.2} alignItems='center' sx={{ px: 0.8 }}>
-          <Box
-            sx={{
-              width: 26,
-              height: 26,
-              borderRadius: '7px',
-              bgcolor: '#F4A20D',
-              color: '#0A122B',
-              fontWeight: 800,
-              fontSize: 10,
-              display: 'grid',
-              placeItems: 'center',
-            }}
-          >
-            FT
-          </Box>
-          <Typography sx={{ fontWeight: 600, color: '#F2F6FF', fontSize: 28 / 2 }}>FinTrack</Typography>
-        </Stack>
-
-        <Stack spacing={0.55} sx={{ mt: 2.2 }}>
-          {menuItems.map((item, i) => (
-            <Button
-              key={item}
-              variant={i === 0 ? 'contained' : 'text'}
-              fullWidth
-              sx={{
-                justifyContent: 'flex-start',
-                borderRadius: '8px',
-                px: 1.6,
-                py: 0.95,
-                color: i === 0 ? '#10172B' : '#95A6C8',
-                bgcolor: i === 0 ? '#F4A20D' : 'transparent',
-                fontSize: 14,
-                '&:hover': {
-                  bgcolor: i === 0 ? '#E99809' : 'rgba(31, 54, 96, 0.28)',
-                },
-              }}
-            >
-              {item}
-            </Button>
-          ))}
-        </Stack>
-
-        <Box sx={{ mt: 'auto', px: 0.8 }}>
-          <Stack direction='row' spacing={1.1} alignItems='center'>
-            <Avatar sx={{ width: 30, height: 30, bgcolor: '#1F335B', color: '#F2A316', fontSize: 13 }}>
-              HG
-            </Avatar>
-            <Box>
-              <Typography sx={{ color: '#E0E8FA', fontSize: 13, lineHeight: 1.25 }}>Hizen Ghoul</Typography>
-              <Typography sx={{ color: '#6D81AA', fontSize: 12 }}>Pro Account</Typography>
-            </Box>
-          </Stack>
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
           px: { xs: 2, md: 3 },
           py: { xs: 2, md: 1.6 },
-          height: '100dvh',
+          height: '100%',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -315,9 +243,14 @@ const Dashboard = () => {
         </Box>
 
         <Paper sx={{ ...panelSx, mt: 1.1, overflow: 'hidden', flex: 1, minHeight: 0 }}>
-          <Stack direction='row' justifyContent='space-between' alignItems='center' sx={{ px: 2, py: 1.5 }}>
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            alignItems='center'
+            sx={{ px: 2, py: 1.5, width: '100%' }}
+          >
             <Typography sx={{ color: '#F3F7FF', fontWeight: 700, fontSize: 22 / 2 }}>Recent Transactions</Typography>
-            <Button sx={{ color: '#F4A20D', fontSize: 12, p: 0, minWidth: 'auto' }}>View all</Button>
+            <Button sx={{ color: '#F4A20D', fontSize: 12, p: 0, minWidth: 'auto', ml: 'auto' }}>View all</Button>
           </Stack>
           <Divider sx={{ borderColor: 'rgba(58, 80, 122, 0.35)' }} />
 
