@@ -1,8 +1,12 @@
 import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
+import AddTransactionModal from '../components/AddTransactionModal'
 
 const filterOptions = ['All', 'Income', 'Expenses', 'Transfers']
 
 const Transactions = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+
   return (
     <Box sx={{ height: '100%', width: '100%', overflow: 'hidden' }}>
       <Box sx={{ px: { xs: 2, md: 3 }, py: { xs: 2, md: 1.6 }, height: '100%', overflow: 'auto' }}>
@@ -85,6 +89,7 @@ const Transactions = () => {
               You have not recorded any expenses for this period. Try switching the filter or add a new transaction.
             </Typography>
             <Button
+              onClick={() => setIsAddModalOpen(true)}
               variant='contained'
               sx={{
                 mt: 1.8,
@@ -100,6 +105,8 @@ const Transactions = () => {
             </Button>
           </Box>
         </Paper>
+
+        <AddTransactionModal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
       </Box>
     </Box>
   )
