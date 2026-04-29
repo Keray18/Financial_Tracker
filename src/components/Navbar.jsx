@@ -1,7 +1,9 @@
 import { Box, Stack, Typography, Button, Avatar } from '@mui/material'
+import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   const menuItems = ['Dashboard', 'Accounts', 'Transactions', 'Analytics', 'Budgets', 'Settings']
+
 
   return (
     <Box
@@ -36,28 +38,31 @@ const Navbar = () => {
       </Stack>
 
       <Stack spacing={0.4} sx={{ mt: 1.8 }}>
-        {menuItems.map((item, i) => (
-          <Button
-            key={item}
-            variant={i === 0 ? 'contained' : 'text'}
-            fullWidth
-            sx={{
-              justifyContent: 'flex-start',
-              borderRadius: '7px',
-              px: 0.9,
-              py: 0.7,
-              color: i === 0 ? '#10172B' : '#95A6C8',
-              bgcolor: i === 0 ? '#F4A20D' : 'transparent',
-              fontSize: 12.5,
-              '&:hover': {
-                bgcolor: i === 0 ? '#E99809' : 'rgba(31, 54, 96, 0.28)',
-              },
-            }}
-          >
-            {item}
-          </Button>
-        ))}
-      </Stack>
+  {menuItems.map((item) => (
+    <NavLink to={`/${item.toLowerCase()}`} key={item} style={{ textDecoration: 'none', display: 'block' }}>
+      {({ isActive }) => (
+        <Button
+          variant={isActive ? 'contained' : 'text'}
+          fullWidth
+          sx={{
+            justifyContent: 'flex-start',
+            borderRadius: '7px',
+            px: 0.9,
+            py: 0.7,
+            color: isActive ? '#10172B' : '#95A6C8',
+            bgcolor: isActive ? '#F4A20D' : 'transparent',
+            fontSize: 12.5,
+            '&:hover': {
+              bgcolor: isActive ? '#E99809' : 'rgba(31, 54, 96, 0.28)',
+            },
+          }}
+        >
+          {item}
+        </Button>
+      )}
+    </NavLink>
+  ))}
+</Stack>
 
       <Box sx={{ mt: 'auto', px: 0.4 }}>
         <Stack direction='row' spacing={0.8} alignItems='center'>
