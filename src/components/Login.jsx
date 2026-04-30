@@ -1,5 +1,7 @@
 import { Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import axios from 'axios'
 
 const inputSx = {
   bgcolor: 'rgba(14, 27, 58, 0.96)',
@@ -23,10 +25,48 @@ const inputSx = {
 const Login = ({ onCreateAccount }) => {
 
   const Navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    mail: '',
+    password: ''
+  })
 
-  const loginHandler = () => {
-    console.log('loginHandler')
-    Navigate('/dashboard')
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const loginHandler = async () => {
+    try {
+      const { mail, password } = formData 
+      if(!mail || !password) {
+        console.log("All fields required")
+        alert('All fields are required')
+        return
+      }
+
+      setLoading(true)
+
+      const response = await axios.post("http://localhost:5000/api/login", 
+        {
+          mail,
+          password
+        }
+      )
+
+      localStorage.setItem("token", response.data.token)
+      Navigate('/dashboard')
+      alert("User logged in successfully!")
+    
+    } catch (err) {
+      console.error(err)
+      alert(err.response?.data?.message || "Error Loggin In.")
+    
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -55,6 +95,9 @@ const Login = ({ onCreateAccount }) => {
             fullWidth
             size='small'
             placeholder='you@example.com'
+            name='mail'
+            value={formData.mail}
+            onChange={handleChange}
             InputProps={{ sx: inputSx }}
           />
         </Box>
@@ -66,6 +109,9 @@ const Login = ({ onCreateAccount }) => {
             size='small'
             type='password'
             placeholder='Enter your password'
+            name='password'
+            value={formData.password}
+            onChange={handleChange}
             InputProps={{ sx: inputSx }}
           />
         </Box>
@@ -90,7 +136,7 @@ const Login = ({ onCreateAccount }) => {
           '&:hover': { bgcolor: '#E79A03' },
         }}
       >
-        Sign In to FinTrack
+        {loading ? 'Signing in...' : 'Sign In to FinTrack'}
       </Button>
 
       <Stack direction='row' alignItems='center' sx={{ my: 2 }}>

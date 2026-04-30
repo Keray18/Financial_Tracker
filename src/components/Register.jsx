@@ -1,4 +1,7 @@
 import { Box, Button, Paper, Stack, TextField, Typography } from '@mui/material'
+import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 const inputSx = {
   bgcolor: 'rgba(14, 27, 58, 0.96)',
@@ -20,6 +23,62 @@ const inputSx = {
 }
 
 const Register = ({ onSignIn }) => {
+
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    mail: '',
+    password: '',
+    confirmPassword: '',
+
+  })
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+  const handleSubmit = async () => {
+    try {
+      const { name, mail, password, confirmPassword } = formData
+
+      if(!name || !mail || !password || !confirmPassword) {
+        console.log("All fields are required!")
+        alert("All fields are required!")
+        return
+      }
+      if(password != confirmPassword) {
+        console.log("Passwords do not match.")
+        alert("Passwords do not match.")
+        return
+      }
+
+      setLoading(true)
+
+      const response = await axios.post("http://localhost:5000/api/register", 
+        {
+          name,
+          mail,
+          password,
+          confirmPassword
+        }
+      )
+
+      localStorage.setItem("token", response.data.token)
+      navigate("/dashboard")
+      alert("User registered successfully!")
+
+    } catch (err) {
+      console.error(err)
+      alert(err.response?.data?.message || "Error Registering!")
+    
+    } finally {
+      setLoading(false)
+    }
+    
+  }
+  
   return (
     <Paper
       elevation={0}
@@ -41,19 +100,22 @@ const Register = ({ onSignIn }) => {
 
       <Stack spacing={1.8}>
         {[
-          { label: 'Name', placeholder: 'Enter your full name', type: 'text' },
-          { label: 'Email Address', placeholder: 'you@example.com', type: 'email' },
-          { label: 'Password', placeholder: 'Create your password', type: 'password' },
-          { label: 'Confirm Password', placeholder: 'Confirm your password', type: 'password' },
+          { label: 'Name', name: 'name', placeholder: 'Enter your full name', type: 'text'},
+          { label: 'Email Address', name: 'mail', placeholder: 'you@example.com', type: 'mail'},
+          { label: 'Password',  name: 'password', placeholder: 'Create your password', type: 'password'},
+          { label: 'Confirm Password', name: 'confirmPassword',  placeholder: 'Confirm your password', type: 'password'},
         ].map((field) => (
           <Box key={field.label}>
             <Typography sx={{ color: '#96A6CA', fontSize: 13, mb: 0.7 }}>{field.label}</Typography>
             <TextField
               fullWidth
               size='small'
+              name={field.name}
               type={field.type}
               placeholder={field.placeholder}
               InputProps={{ sx: inputSx }}
+              value={formData[field.name]}
+              onChange={handleChange}
             />
           </Box>
         ))}
@@ -62,6 +124,7 @@ const Register = ({ onSignIn }) => {
       <Button
         fullWidth
         variant='contained'
+        onClick={handleSubmit}
         sx={{
           mt: 2,
           bgcolor: '#F8A400',
@@ -74,7 +137,7 @@ const Register = ({ onSignIn }) => {
           '&:hover': { bgcolor: '#E79A03' },
         }}
       >
-        Create Account
+        {loading ? "Setting up you account..." : "Create Account"}
       </Button>
 
       <Typography sx={{ mt: 2.2, color: '#7B8EB7', fontSize: 14 }}>
