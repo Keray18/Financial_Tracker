@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 const ProtectedLayout = () => {
-  const isAuthenticated = true
+  const isAuthenticated = localStorage.getItem('token')
 
   if (!isAuthenticated) {
     return <Navigate to='/' />

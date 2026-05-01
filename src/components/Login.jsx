@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const inputSx = {
@@ -24,7 +24,7 @@ const inputSx = {
 
 const Login = ({ onCreateAccount }) => {
 
-  const Navigate = useNavigate()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     mail: '',
@@ -38,13 +38,21 @@ const Login = ({ onCreateAccount }) => {
     })
   }
 
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+
+    if(token) {
+      navigate("/dashboard")
+    }
+  }, [navigate])
+
   const loginHandler = async () => {
     try {
       const { mail, password } = formData 
       if(!mail || !password) {
-        console.log("All fields required")
-        alert('All fields are required')
-        return
+        console.log("All fields are required.")
+        alert("All fields are required.")
+        return 
       }
 
       setLoading(true)
@@ -55,19 +63,21 @@ const Login = ({ onCreateAccount }) => {
           password
         }
       )
+      const { token } = response.data 
+      localStorage.setItem('token', token)
 
-      localStorage.setItem("token", response.data.token)
-      Navigate('/dashboard')
-      alert("User logged in successfully!")
+      console.log("User logged in.")
+      navigate("/dashboard")
+      alert("You are logged in successfully.")
     
     } catch (err) {
       console.error(err)
-      alert(err.response?.data?.message || "Error Loggin In.")
+      alert(err.response?.data?.message || "Login failed. Please try again.")
     
     } finally {
       setLoading(false)
     }
-  }
+    }
 
   return (
     <Paper

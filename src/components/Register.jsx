@@ -65,7 +65,9 @@ const Register = ({ onSignIn }) => {
         }
       )
 
-      localStorage.setItem("token", response.data.token)
+      const { token } = response.data
+
+      localStorage.setItem("token", token)
       navigate("/dashboard")
       alert("User registered successfully!")
 
