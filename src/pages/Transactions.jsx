@@ -1,15 +1,18 @@
-import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material'
+import { Box, Button, Checkbox, Chip, Paper, Stack, TextField, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
 import AddTransactionModal from '../components/AddTransactionModal'
 import axios from 'axios'
 
 
-const filterOptions = ['All', 'Income', 'Expenses', 'Transfers']
+const filterOptions = ['All', 'Expenses', 'Income']
 
 const Transactions = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [activeFilter, setActiveFilter] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isDeleteMode, setIsDeleteMode] = useState(false)
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -70,43 +73,87 @@ const Transactions = () => {
             direction={{ xs: 'column', md: 'row' }}
             spacing={1.25}
             alignItems={{ xs: 'stretch', md: 'center' }}
+            sx={{ gap: { md: 1.5 } }}
           >
-            <Box
-              sx={{
-                flex: 1,
-                minWidth: 0,
-                borderRadius: '8px',
-                bgcolor: 'rgba(33, 53, 92, 0.6)',
-                px: 1.1,
-                py: 1,
-                color: '#8EA3CC',
-                fontSize: 13,
-              }}
-            >
-              Search transactions...
-            </Box>
             <Stack
               direction='row'
               spacing={0.8}
-              sx={{ flexWrap: 'wrap', rowGap: 1, alignItems: 'center' }}
+              sx={{
+                flexWrap: 'wrap',
+                rowGap: 1,
+                alignItems: 'center',
+                flexShrink: 0,
+                order: { xs: 1, md: 0 },
+              }}
             >
               {filterOptions.map((option) => (
                 <Chip
                   key={option}
                   label={option}
+                  onClick={() => setActiveFilter(option)}
                   sx={{
-                    bgcolor: option === 'Expenses' ? '#F4A20D' : 'rgba(33, 53, 92, 0.7)',
-                    color: option === 'Expenses' ? '#0F1A35' : '#9FB2D9',
+                    cursor: 'pointer',
+                    bgcolor: activeFilter === option ? '#F4A20D' : 'rgba(33, 53, 92, 0.7)',
+                    color: activeFilter === option ? '#0F1A35' : '#9FB2D9',
                     fontWeight: 600,
+                    '&:hover': {
+                      bgcolor: activeFilter === option ? '#E49607' : 'rgba(33, 53, 92, 0.85)',
+                    },
                   }}
                 />
               ))}
+            </Stack>
+
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                order: { xs: 2, md: 0 },
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <TextField
+                fullWidth
+                size='small'
+                placeholder='Search transactions...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                variant='outlined'
+                sx={{
+                  maxWidth: { md: 440, lg: 520 },
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    bgcolor: 'rgba(33, 53, 92, 0.6)',
+                    color: '#EAF0FF',
+                    '& fieldset': { borderColor: 'rgba(62, 90, 144, 0.45)' },
+                    '&:hover fieldset': { borderColor: 'rgba(90, 120, 180, 0.55)' },
+                    '&.Mui-focused fieldset': { borderColor: 'rgba(244, 162, 13, 0.65)' },
+                  },
+                  '& .MuiOutlinedInput-input::placeholder': {
+                    color: '#8EA3CC',
+                    opacity: 1,
+                  },
+                }}
+              />
+            </Box>
+
+            <Stack
+              direction='row'
+              spacing={1}
+              sx={{
+                flexShrink: 0,
+                order: { xs: 3, md: 0 },
+                alignItems: 'center',
+                justifyContent: { xs: 'stretch', sm: 'flex-end' },
+                flexWrap: 'wrap',
+              }}
+            >
               <Button
                 variant='contained'
                 onClick={() => setIsAddModalOpen(true)}
                 sx={{
-                  ml: { xs: 0, md: 0.5 },
-                  flexShrink: 0,
+                  flex: { xs: 1, sm: 'none' },
                   bgcolor: '#F4A20D',
                   color: '#0F1A35',
                   fontWeight: 700,
@@ -119,6 +166,39 @@ const Transactions = () => {
                 }}
               >
                 Add Transaction
+              </Button>
+              <Button
+                variant={isDeleteMode ? 'contained' : 'outlined'}
+                onClick={() => setIsDeleteMode((v) => !v)}
+                sx={{
+                  flex: { xs: 1, sm: 'none' },
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  px: 2.25,
+                  py: 1.15,
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                  ...(isDeleteMode
+                    ? {
+                        bgcolor: 'rgba(255, 107, 107, 0.22)',
+                        color: '#FF9B9B',
+                        border: '1px solid rgba(255, 107, 107, 0.45)',
+                        '&:hover': {
+                          bgcolor: 'rgba(255, 107, 107, 0.32)',
+                          border: '1px solid rgba(255, 107, 107, 0.55)',
+                        },
+                      }
+                    : {
+                        color: '#FF9B9B',
+                        borderColor: 'rgba(255, 107, 107, 0.45)',
+                        '&:hover': {
+                          borderColor: 'rgba(255, 107, 107, 0.65)',
+                          bgcolor: 'rgba(255, 107, 107, 0.08)',
+                        },
+                      }),
+                }}
+              >
+                {isDeleteMode ? 'Cancel' : 'Delete'}
               </Button>
             </Stack>
           </Stack>
@@ -235,27 +315,40 @@ const Transactions = () => {
                     borderRadius: '10px',
                     bgcolor: 'rgba(33, 53, 92, 0.6)',
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
+                    gap: 1.25,
                   }}
                 >
-                  <Box>
-                    <Typography sx={{ color: '#EAF0FF', fontWeight: 600 }}>
-                      {tx.title}
-                    </Typography>
-                    <Typography sx={{ color: '#8EA3CC', fontSize: 13 }}>
-                      {tx.category ?? '—'} • {tx.transactionType}
+                  {isDeleteMode && (
+                    <Checkbox
+                      size='small'
+                      sx={{
+                        p: 0.5,
+                        color: 'rgba(142, 163, 204, 0.7)',
+                        '&.Mui-checked': { color: '#F4A20D' },
+                      }}
+                    />
+                  )}
+                  <Box sx={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1.5 }}>
+                    <Box>
+                      <Typography sx={{ color: '#EAF0FF', fontWeight: 600 }}>
+                        {tx.title}
+                      </Typography>
+                      <Typography sx={{ color: '#8EA3CC', fontSize: 13 }}>
+                        {tx.category ?? '—'} • {tx.transactionType}
+                      </Typography>
+                    </Box>
+
+                    <Typography
+                      sx={{
+                        color: tx.transactionType === 'Expense' ? '#FF6B6B' : '#4ADE80',
+                        fontWeight: 700,
+                        flexShrink: 0,
+                      }}
+                    >
+                      ₹{amtFormatter(tx.amount)}
                     </Typography>
                   </Box>
-
-                  <Typography
-                    sx={{
-                      color: tx.transactionType === 'Expense' ? '#FF6B6B' : '#4ADE80',
-                      fontWeight: 700,
-                    }}
-                  >
-                    ₹{amtFormatter(tx.amount)}
-                  </Typography>
                 </Paper>
               ))}
             </Stack>
